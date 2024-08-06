@@ -1,88 +1,50 @@
-import {initialCards} from "./cards";
-import {closeModal, showModal} from "./modal";
+import {openModalImage} from "../index";
 
-function createCard(card, deleteCallback, openImageCallback, likeCallback) {
-    const template = document.querySelector('#card-template').content.cloneNode(true);
+function getCardTemplate() {
+    const card = document.querySelector('#card-template').content.cloneNode(true);
+    return {
+        card,
+        image: card.querySelector('.card__image'),
+        title: card.querySelector('.card__title'),
+        buttons: {
+            delete: card.querySelector('.card__delete-button'),
+            like: card.querySelector('.card__like-button')
+        }
+    }
+}
 
-    const img = template.querySelector('.card__image');
-    img.setAttribute('src', card.link);
-    img.setAttribute('alt', card.name)
-    img.addEventListener('click', openImageCallback)
+export function createCard(cardData, deleteCallback, openImageCallback, likeCallback) {
+    const template = getCardTemplate()
 
-    const title = template.querySelector('.card__title')
-    title.textContent = card.name;
+    const img = template.image;
+    img.setAttribute('src', cardData.link);
+    img.setAttribute('alt', cardData.name)
+    img.addEventListener('click', openImageCallback);
 
-    const buttonDelete = template.querySelector('.card__delete-button');
-    buttonDelete.addEventListener('click', deleteCallback);
+    template.title.textContent = cardData.name;
 
-    const buttonLike = template.querySelector('.card__like-button');
-    buttonLike.addEventListener('click', likeCallback);
+    template.buttons.delete.addEventListener('click', deleteCallback);
+    template.buttons.like.addEventListener('click', likeCallback);
 
     return template;
 }
 
-export function addCards() {
-    const cardContainer = document.querySelector('.places__list');
-    initialCards.forEach((card) => {
-        const cardNode = createCard(card, cardDeleteHandler, openImageHandler, likeHandler);
-        cardContainer.append(cardNode);
-    })
+export function deleteCardHandler(event) {
+    const card = event.target.closest('.card');
+    card.remove();
 }
 
-function cardDeleteHandler(event) {
-    event.target.closest('.card').remove();
+export function openImageHandler(event) {
+    const image = event.target;
+
+    const imageUrl = image.getAttribute('src');
+    const name = image.getAttribute('alt');
+
+    openModalImage(imageUrl, name);
 }
 
-function openImageHandler(event) {
-    const imageUrl = event.target.getAttribute('src');
-    openModalImage(imageUrl)
+export function likeHandler(event) {
+    const likeButton = event.target;
+    likeButton.classList.toggle('card__like-button_is-active')
 }
 
-function likeHandler(event) {
-    event.target.classList.toggle('card__like-button_is-active')
-}
-
-function openModalImage(imageUrl) {
-    const modalWindow = showModal('.popup_type_image')
-    const image = modalWindow.querySelector('.popup__image');
-    image.setAttribute('src', imageUrl);
-}
-function openModalAddCard(){
-    const modalWindow = showModal('.popup_type_new-card');
-}
-
-function  addCardClickHandler(event){
-    openModalAddCard();
-}
-
-export function initAddCard(){
-    const buttonAdd = document.querySelector('.profile__add-button')
-    buttonAdd.addEventListener('click', addCardClickHandler)
-}
-
-function saveCardClickHandler(event){
-    const buttonSubmit = event.target;
-    const modalWindow = buttonSubmit.closest('.popup_type_new-card');
-    saveNewCard(modalWindow)
-}
-
-function saveNewCard(modalWindow){
-    const inputName = modalWindow.querySelector('.popup__input_type_card-name');
-    const inputLink = modalWindow.querySelector('.popup__input_type_url');
-    const name = inputName.value;
-    const link = inputLink.value;
-
-    const card = createCard( {name, link}, cardDeleteHandler, openImageHandler, likeHandler);
-    const cardContainer = document.querySelector('.places__list');
-    cardContainer.prepend(card);
-
-inputName.value = '';
-inputLink.value = '';
-closeModal(modalWindow);
-}
-
-export function initCardEdit(){
-    const modalWindow = document.querySelector('.popup_type_new-card');
-    const buttonSubmit = modalWindow.querySelector('.popup__button');
-    buttonSubmit.addEventListener('click', saveCardClickHandler)
-}

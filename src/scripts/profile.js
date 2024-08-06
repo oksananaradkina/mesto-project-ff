@@ -1,18 +1,37 @@
-import {showModal} from "./modal";
+import {getModal, modalTypes, showModal} from "./modal";
+
+function getProfile() {
+    const profileInfo = document.querySelector('.profile__info');
+    return {
+        window: profileInfo,
+        fields: {
+            name: profileInfo.querySelector('.profile__title'),
+            description: profileInfo.querySelector('.profile__description'),
+        }
+    }
+}
+
+
+const profileSection = getProfile();
 
 function buttonEditClickHandler(event) {
-    const profileInfo = document.querySelector('.profile__info');
-    const name = profileInfo.querySelector('.profile__title').textContent;
-    const description = profileInfo.querySelector('.profile__description').textContent;
+    const name = profileSection.fields.name.textContent;
+    const description = profileSection.fields.description.textContent;
     openProfileEdit(name, description)
 }
 
+export function updateProfile(name, description) {
+    profileSection.fields.name.textContent = name;
+    profileSection.fields.description.textContent = description;
+}
+
 function openProfileEdit(name, description) {
-    const modalWindow = showModal('.popup_type_edit')
-    const inputName = modalWindow.querySelector('.popup__input_type_name');
-    const inputDescription = modalWindow.querySelector('.popup__input_type_description');
-    inputName.value = name;
-    inputDescription.value = description;
+    const modalWindow = getModal(modalTypes.EDIT);
+
+    modalWindow.fields.name.value = name;
+    modalWindow.fields.description.value = description;
+
+    showModal(modalWindow);
 }
 
 export function initProfile() {

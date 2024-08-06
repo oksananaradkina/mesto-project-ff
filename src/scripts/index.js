@@ -3,13 +3,6 @@
 // @todo: DOM узлы
 
 // @todo: Функция создания карточки
-import {initialCards} from "./cards"
-
-
-
-
-
-
 
 
 // @todo: Функция удаления карточки
@@ -23,4 +16,3 @@ import {initialCards} from "./cards"
 
 
 
-// addCards();

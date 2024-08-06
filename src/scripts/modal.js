@@ -1,38 +1,100 @@
-export function showModal(selector) {
-    const modalWindow = document.querySelector(selector);
-    modalWindow.classList.add('popup_is-opened');
-    modalWindow.addEventListener('click', overlayClickHandler);
-    document.addEventListener('keydown', keyEscDownHandler);
-
-    const buttonClose = modalWindow.querySelector('.popup__close');
-    buttonClose.addEventListener('click', buttonCloseClickHandler);
-
-    return modalWindow;
+export const modalTypes = {
+    EDIT: 'edit',
+    NEW_CARD: 'new_card',
+    IMAGE: 'image'
 }
 
-function overlayClickHandler(event) {
-    if(event.target.classList.contains('popup')){
-        closeModal(event.target);
+function getModalEdit() {
+    const modalWindow = document.querySelector('.popup_type_edit');
+    return {
+        window: modalWindow,
+        form: modalWindow.querySelector('.popup__form'),
+
+        fields: {
+            name: modalWindow.querySelector('.popup__input_type_name'),
+            description: modalWindow.querySelector('.popup__input_type_description')
+        },
+        buttons: {
+            close: modalWindow.querySelector('.popup__close'),
+            submit: modalWindow.querySelector('.popup__button')
+        }
     }
 }
 
-function buttonCloseClickHandler(event) {
-    const modalWindow = event.target.closest('.popup');
-    closeModal(modalWindow);
+function getModalNewCard() {
+    const modalWindow = document.querySelector('.popup_type_new-card');
+    return {
+        window: modalWindow,
+        form: modalWindow.querySelector('.popup__form'),
+        fields: {
+            place_name: modalWindow.querySelector('.popup__input_type_card-name'),
+            link: modalWindow.querySelector('.popup__input_type_url')
+        },
+        buttons: {
+            close: modalWindow.querySelector('.popup__close'),
+            submit: modalWindow.querySelector('.popup__button')
+        }
+    }
+
 }
 
-function keyEscDownHandler(event) {
-    if(event.keyCode === 27){
-        const modalWindow = document.querySelector('.popup_is-opened');
-        closeModal(modalWindow);
+function getModalImage() {
+    const modalWindow = document.querySelector('.popup_type_image');
+    return {
+        window: modalWindow,
+        items: {
+            image: modalWindow.querySelector('.popup__image'),
+            caption: modalWindow.querySelector('.popup__caption')
+        },
+        buttons: {
+            close: modalWindow.querySelector('.popup__close'),
+        }
+    }
+}
+
+export const modalWindows = {
+    [modalTypes.EDIT]: getModalEdit(),
+    [modalTypes.NEW_CARD]: getModalNewCard(),
+    [modalTypes.IMAGE]: getModalImage()
+}
+
+export function getModal(modalType) {
+    return modalWindows[modalType]
+}
+
+export function showModal(modalWindow) {
+    modalWindow.window.classList.add('popup_is-opened');
+    modalWindow.window.addEventListener('click', overlayClickHandler(modalWindow));
+    document.addEventListener('keydown', keyEscDownHandler(modalWindow));
+
+    modalWindow.buttons.close.addEventListener('click', buttonCloseClickHandler(modalWindow));
+}
+
+function overlayClickHandler(modalWindow) {
+    return (event) => {
+        if (event.target === modalWindow.window) {
+            closeModal(modalWindow)
+        }
+    }
+}
+
+function buttonCloseClickHandler(modalWindow) {
+    return () => closeModal(modalWindow)
+}
+
+function keyEscDownHandler(modalWindow) {
+    const _modalWindow = modalWindow;
+    return (event) => {
+        if (event.keyCode === 27) {
+            closeModal(_modalWindow);
+        }
     }
 }
 
 export function closeModal(modalWindow) {
-    modalWindow.removeEventListener('click', overlayClickHandler);
-    const buttonClose = modalWindow.querySelector('.popup__close');
-    buttonClose.removeEventListener('click', buttonCloseClickHandler);
-    document.removeEventListener('keydown', keyEscDownHandler);
+    modalWindow.window.removeEventListener('click', overlayClickHandler);
+    modalWindow.buttons.close.removeEventListener('click', buttonCloseClickHandler);
+    document.removeEventListener('keydown', keyEscDownHandler(modalWindow.window));
 
-    modalWindow.classList.remove('popup_is-opened');
+    modalWindow.window.classList.remove('popup_is-opened');
 }
