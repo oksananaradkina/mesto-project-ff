@@ -16,7 +16,6 @@ function getModalEdit() {
         },
         buttons: {
             close: modalWindow.querySelector('.popup__close'),
-            submit: modalWindow.querySelector('.popup__button')
         }
     }
 }
@@ -32,7 +31,6 @@ function getModalNewCard() {
         },
         buttons: {
             close: modalWindow.querySelector('.popup__close'),
-            submit: modalWindow.querySelector('.popup__button')
         }
     }
 
