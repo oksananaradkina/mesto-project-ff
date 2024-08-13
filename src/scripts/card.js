@@ -1,4 +1,5 @@
-import {openModalImage} from "../index";
+import {showModal} from "./modal";
+import {getModal, modalTypes} from "../index";
 
 function getCardTemplate() {
     const card = document.querySelector('#card-template').content.cloneNode(true);
@@ -32,15 +33,6 @@ export function createCard(cardData, deleteCallback, openImageCallback, likeCall
 export function deleteCardHandler(event) {
     const card = event.target.closest('.card');
     card.remove();
-}
-
-export function openImageHandler(event) {
-    const image = event.target;
-
-    const imageUrl = image.getAttribute('src');
-    const name = image.getAttribute('alt');
-
-    openModalImage(imageUrl, name);
 }
 
 export function likeHandler(event) {

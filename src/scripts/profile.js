@@ -1,4 +1,5 @@
-import {getModal, modalTypes, showModal} from "./modal";
+import {showModal} from "./modal";
+import {getModal, modalTypes} from "../index";
 
 function getProfile() {
     const profileInfo = document.querySelector('.profile__info');
@@ -14,7 +15,7 @@ function getProfile() {
 
 const profileSection = getProfile();
 
-function buttonEditClickHandler(event) {
+function editButtonClickHandler(event) {
     const name = profileSection.fields.name.textContent;
     const description = profileSection.fields.description.textContent;
     openProfileEdit(name, description)
@@ -36,5 +37,5 @@ function openProfileEdit(name, description) {
 
 export function initProfile() {
     const buttonEdit = document.querySelector('.profile__edit-button');
-    buttonEdit.addEventListener('click', buttonEditClickHandler)
+    buttonEdit.addEventListener('click', editButtonClickHandler)
 }

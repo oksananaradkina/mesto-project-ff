@@ -1,11 +1,69 @@
 import './pages/index.css';
-import {createCard, deleteCardHandler, likeHandler, openImageHandler} from "./scripts/card";
+import {createCard, deleteCardHandler, likeHandler} from "./scripts/card";
 import {initProfile, updateProfile} from "./scripts/profile";
 import {initialCards} from "./scripts/cards";
-import {closeModal, getModal, modalTypes, modalWindows, showModal} from "./scripts/modal";
+import {closeModal, showModal} from "./scripts/modal";
 
 const cardContainer = document.querySelector('.places__list');
 const buttonAddCard = document.querySelector('.profile__add-button');
+
+export const modalTypes = {
+    EDIT: 'edit',
+    NEW_CARD: 'new_card',
+    IMAGE: 'image'
+}
+
+function getModalEdit() {
+    const modalWindow = document.querySelector('.popup_type_edit');
+    return {
+        window: modalWindow,
+        form: modalWindow.querySelector('.popup__form'),
+
+        fields: {
+            name: modalWindow.querySelector('.popup__input_type_name'),
+            description: modalWindow.querySelector('.popup__input_type_description')
+        },
+        buttons: {
+            close: modalWindow.querySelector('.popup__close'),
+        }
+    }
+}
+
+function getModalNewCard() {
+    const modalWindow = document.querySelector('.popup_type_new-card');
+    return {
+        window: modalWindow,
+        form: modalWindow.querySelector('.popup__form'),
+        fields: {
+            place_name: modalWindow.querySelector('.popup__input_type_card-name'),
+            link: modalWindow.querySelector('.popup__input_type_url')
+        },
+        buttons: {
+            close: modalWindow.querySelector('.popup__close'),
+        }
+    }
+
+}
+
+function getModalImage() {
+    const modalWindow = document.querySelector('.popup_type_image');
+    return {
+        window: modalWindow,
+        items: {
+            image: modalWindow.querySelector('.popup__image'),
+            caption: modalWindow.querySelector('.popup__caption')
+        },
+        buttons: {
+            close: modalWindow.querySelector('.popup__close'),
+        }
+    }
+}
+
+export const modalWindows = {
+    [modalTypes.EDIT]: getModalEdit(),
+    [modalTypes.NEW_CARD]: getModalNewCard(),
+    [modalTypes.IMAGE]: getModalImage()
+}
 
 export function initAddCard() {
     buttonAddCard.addEventListener('click', addCardClickHandler);
@@ -25,13 +83,8 @@ export function addCards() {
     })
 }
 
-export function openModalImage(imageUrl, name) {
-    const modalWindow = getModal(modalTypes.IMAGE);
-
-    modalWindow.items.image.setAttribute('src', imageUrl);
-    modalWindow.items.image.setAttribute('alt', name);
-
-    showModal(modalWindow);
+export function getModal(modalType) {
+    return modalWindows[modalType]
 }
 
 function openModalAddCard() {
@@ -68,6 +121,20 @@ function saveNewCard(modalWindow) {
     modalWindow.fields.place_name.value = '';
     modalWindow.fields.link.value = '';
     closeModal(modalWindow);
+}
+
+function openImageHandler(event) {
+    const image = event.target;
+
+    const imageUrl = image.getAttribute('src');
+    const name = image.getAttribute('alt');
+
+    const modalWindow = getModal(modalTypes.IMAGE);
+
+    modalWindow.items.image.setAttribute('src', imageUrl);
+    modalWindow.items.image.setAttribute('alt', name);
+
+    showModal(modalWindow);
 }
 
 
