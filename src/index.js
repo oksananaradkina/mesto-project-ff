@@ -1,8 +1,7 @@
 import './pages/index.css';
 import {createCard, deleteCardHandler, likeHandler} from "./scripts/card";
-import {initProfile, updateProfile} from "./scripts/profile";
 import {initialCards} from "./scripts/cards";
-import {closeModal, showModal} from "./scripts/modal";
+import {closeModal, createHandlers, showModal} from "./scripts/modal";
 
 const cardContainer = document.querySelector('.places__list');
 const buttonAddCard = document.querySelector('.profile__add-button');
@@ -13,67 +12,105 @@ export const modalTypes = {
     IMAGE: 'image'
 }
 
-function getModalEdit() {
-    const modalWindow = document.querySelector('.popup_type_edit');
-    return {
-        window: modalWindow,
-        form: modalWindow.querySelector('.popup__form'),
-
-        fields: {
-            name: modalWindow.querySelector('.popup__input_type_name'),
-            description: modalWindow.querySelector('.popup__input_type_description')
-        },
-        buttons: {
-            close: modalWindow.querySelector('.popup__close'),
-        }
-    }
-}
-
-function getModalNewCard() {
-    const modalWindow = document.querySelector('.popup_type_new-card');
-    return {
-        window: modalWindow,
-        form: modalWindow.querySelector('.popup__form'),
-        fields: {
-            place_name: modalWindow.querySelector('.popup__input_type_card-name'),
-            link: modalWindow.querySelector('.popup__input_type_url')
-        },
-        buttons: {
-            close: modalWindow.querySelector('.popup__close'),
-        }
-    }
-
-}
-
-function getModalImage() {
-    const modalWindow = document.querySelector('.popup_type_image');
-    return {
-        window: modalWindow,
-        items: {
-            image: modalWindow.querySelector('.popup__image'),
-            caption: modalWindow.querySelector('.popup__caption')
-        },
-        buttons: {
-            close: modalWindow.querySelector('.popup__close'),
-        }
-    }
-}
-
 export const modalWindows = {
     [modalTypes.EDIT]: getModalEdit(),
     [modalTypes.NEW_CARD]: getModalNewCard(),
     [modalTypes.IMAGE]: getModalImage()
 }
 
-export function initAddCard() {
-    buttonAddCard.addEventListener('click', addCardClickHandler);
-    const modalWindow = modalWindows[modalTypes.NEW_CARD];
-    modalWindow.form.addEventListener('submit', saveCardClickHandler);
+const profileSection = getProfile();
+
+function getProfile() {
+    const profileInfo = document.querySelector('.profile__info');
+    return {
+        fields: {
+            name: profileInfo.querySelector('.profile__title'),
+            description: profileInfo.querySelector('.profile__description'),
+        }
+    }
 }
 
-export function initProfileEdit() {
+export function updateProfile(name, description) {
+    profileSection.fields.name.textContent = name;
+    profileSection.fields.description.textContent = description;
+}
+
+function openProfileEdit(name, description) {
     const modalWindow = modalWindows[modalTypes.EDIT];
-    modalWindow.form.addEventListener('submit', saveProfileClickHandler);
+
+    modalWindow.fields.name.value = name;
+    modalWindow.fields.description.value = description;
+
+    showModal(modalWindow);
+}
+
+function getModalEdit() {
+    const modalWindowElement = document.querySelector('.popup_type_edit');
+    const data = {
+        modalWindow: modalWindowElement,
+        form: modalWindowElement.querySelector('.popup__form'),
+        fields: {
+            name: modalWindowElement.querySelector('.popup__input_type_name'),
+            description: modalWindowElement.querySelector('.popup__input_type_description')
+        },
+        buttons: {
+            close: modalWindowElement.querySelector('.popup__close'),
+        }
+    }
+    data.handlers = createHandlers(data, saveProfileClickHandler);
+
+    return data;
+}
+
+function getModalNewCard() {
+    const modalWindowElement = document.querySelector('.popup_type_new-card');
+    const data = {
+        modalWindow: modalWindowElement,
+        form: modalWindowElement.querySelector('.popup__form'),
+        fields: {
+            place_name: modalWindowElement.querySelector('.popup__input_type_card-name'),
+            link: modalWindowElement.querySelector('.popup__input_type_url')
+        },
+        buttons: {
+            close: modalWindowElement.querySelector('.popup__close'),
+        }
+    }
+    data.handlers = createHandlers(data, saveCardClickHandler);
+
+    return data;
+}
+
+function getModalImage() {
+    const modalWindowElement = document.querySelector('.popup_type_image');
+    const data = {
+        modalWindow: modalWindowElement,
+        items: {
+            image: modalWindowElement.querySelector('.popup__image'),
+            caption: modalWindowElement.querySelector('.popup__caption')
+        },
+        buttons: {
+            close: modalWindowElement.querySelector('.popup__close'),
+        },
+        handlers: createHandlers(modalWindowElement)
+    }
+    data.handlers = createHandlers(data);
+
+    return data;
+}
+
+export function initAddCard() {
+    buttonAddCard.addEventListener('click', addCardClickHandler);
+}
+
+export function initProfile() {
+    const buttonEdit = document.querySelector('.profile__edit-button');
+    buttonEdit.addEventListener('click', editButtonClickHandler)
+}
+
+function editButtonClickHandler(event) {
+    const name = profileSection.fields.name.textContent;
+    const description = profileSection.fields.description.textContent;
+    openProfileEdit(name, description)
 }
 
 export function addCards() {
@@ -83,12 +120,8 @@ export function addCards() {
     })
 }
 
-export function getModal(modalType) {
-    return modalWindows[modalType]
-}
-
 function openModalAddCard() {
-    const modalWindow = getModal(modalTypes.NEW_CARD)
+    const modalWindow = modalWindows[modalTypes.NEW_CARD]
     showModal(modalWindow);
 }
 
@@ -129,16 +162,16 @@ function openImageHandler(event) {
     const imageUrl = image.getAttribute('src');
     const name = image.getAttribute('alt');
 
-    const modalWindow = getModal(modalTypes.IMAGE);
+    const modalWindow = modalWindows[modalTypes.IMAGE];
 
     modalWindow.items.image.setAttribute('src', imageUrl);
     modalWindow.items.image.setAttribute('alt', name);
+    modalWindow.items.caption.textContent = name;
+
 
     showModal(modalWindow);
 }
 
-
 initAddCard();
 initProfile();
-initProfileEdit();
 addCards();

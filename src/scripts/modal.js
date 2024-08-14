@@ -1,15 +1,43 @@
-export function showModal(modalWindow) {
-    modalWindow.window.classList.add('popup_is-opened');
-    modalWindow.window.addEventListener('click', overlayClickHandler(modalWindow));
-    document.addEventListener('keydown', keyEscDownHandler(modalWindow));
-
-    modalWindow.buttons.close.addEventListener('click', closeButtonClickHandler(modalWindow));
+export function createHandlers(modalWindow, submitHandler = null) {
+    return {
+        overlay_click: overlayClickHandler(modalWindow),
+        key_esc_down: keyEscDownHandler(modalWindow),
+        close_button_click: closeButtonClickHandler(modalWindow),
+        submit: submitHandler
+    }
 }
 
-function overlayClickHandler(modalWindow) {
+export function showModal(data) {
+    const {handlers, modalWindow, buttons} = data;
+    modalWindow.classList.add('popup_is-opened');
+
+    modalWindow.addEventListener('click', handlers.overlay_click);
+    document.addEventListener('keydown', handlers.key_esc_down);
+    buttons.close.addEventListener('click', handlers.close_button_click);
+
+    if (handlers.submit) {
+        data.form.addEventListener('submit', handlers.submit)
+    }
+}
+
+export function closeModal(data) {
+    const {handlers, modalWindow, buttons} = data;
+
+    modalWindow.classList.remove('popup_is-opened');
+
+    modalWindow.removeEventListener('click', handlers.overlay_click);
+    buttons.close.removeEventListener('click', handlers.close_button_click);
+    document.removeEventListener('keydown', handlers.key_esc_down);
+
+    if (handlers.submit) {
+        data.form.removeEventListener('submit', handlers.submit)
+    }
+}
+
+function overlayClickHandler(windowData) {
     return (event) => {
-        if (event.target === modalWindow.window) {
-            closeModal(modalWindow)
+        if (event.target === windowData.modalWindow) {
+            closeModal(windowData)
         }
     }
 }
@@ -19,18 +47,10 @@ function closeButtonClickHandler(modalWindow) {
 }
 
 function keyEscDownHandler(modalWindow) {
-    const _modalWindow = modalWindow;
     return (event) => {
         if (event.keyCode === 27) {
-            closeModal(_modalWindow);
+            closeModal(modalWindow);
         }
     }
 }
 
-export function closeModal(modalWindow) {
-    modalWindow.window.removeEventListener('click', overlayClickHandler);
-    modalWindow.buttons.close.removeEventListener('click', closeButtonClickHandler);
-    document.removeEventListener('keydown', keyEscDownHandler(modalWindow.window));
-
-    modalWindow.window.classList.remove('popup_is-opened');
-}

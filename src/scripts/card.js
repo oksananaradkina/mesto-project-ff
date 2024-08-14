@@ -1,6 +1,3 @@
-import {showModal} from "./modal";
-import {getModal, modalTypes} from "../index";
-
 function getCardTemplate() {
     const card = document.querySelector('#card-template').content.cloneNode(true);
     return {
