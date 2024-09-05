@@ -53,4 +53,3 @@ function keyEscDownHandler(modalWindow) {
         }
     }
 }
-

@@ -17,3 +17,26 @@
     padding: 30px 20px;
   }
 }
+
+.popup_type_avatar,
+.popup__content{
+  min-height: auto;
+}
+
+.profile__avatar_icon_edit{
+  content: "";
+  display: block;
+  background-image: url(../../../images/pencil.png);
+  background-color: rgba(0, 0, 0, 0.8);
+  background-repeat: no-repeat;
+  background-position: 40% 50%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 999;
+  opacity: 0;
+}
+
+.profile__avatar_icon_edit:hover{
+  opacity: 100%;
+}

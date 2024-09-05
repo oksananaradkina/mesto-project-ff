@@ -1,5 +1,39 @@
-[проект](https://github.com/oksananaradkina/mesto-project-ff)
+# Проектная работа 'Mesto'  
+## Ссылки  
 
-[общая фигма]( https://www.figma.com/design/bjyvbKKJN2naO0ucURl2Z0/JavaScript.-Sprint-5?node-id=0-1&t=2JV3SdD8ZppIDTUS-0 )
+[проект на GitHub](https://github.com/oksananaradkina/mesto-project-ff)  
+[демо](https://oksananaradkina.github.io/mesto-project-ff )  
 
-[дубликат](https://www.figma.com/design/PjWLTPRATV43tuByiyTRkn/JavaScript.-Sprint-5-(Copy)?node-id=0-1&t=CGi05qQqneHoQT8N-0)
+### Макеты в Figma  
+
+[общий]( https://www.figma.com/design/bjyvbKKJN2naO0ucURl2Z0/JavaScript.-Sprint-5?node-id=0-1&t=2JV3SdD8ZppIDTUS-0 )
+
+[форк](https://www.figma.com/design/PjWLTPRATV43tuByiyTRkn/JavaScript.-Sprint-5-(Copy)?node-id=0-1&t=CGi05qQqneHoQT8N-0)
+
+
+## Описание
+Этот сайт содержит профиль текущего пользователя и лента карточек с картинками.   
+Профиль содержит:  
+- аватар;  
+- имя пользователя;  
+- описание.  
+
+карточка содержит:  
+- наименование карточек;  
+- кнопка удалить карточку (но только если мы её добавили сами);
+- кнопка добавления лайка.  
+
+## Изьенение:
+- Добавлена валидация форм 'Редантирование профиля' и 'Новое место'. Подключила проект место к серверу;  
+- добавлен функционал обмен данными с сервером;  
+- добавлен функционал редактированния профиля;  
+- реализовала функционал лайка карточек (отображение количества лайков, добавление и удаление лайков);  
+- реализованно удаление карточек владельцем которых является текущий пользователь;   
+- реализован функционал индикации загрузки данных с сервера.  
+
+# Установка  
+## Системные требования  
+- Версия JavaScript: ECMAScript 2023
+## Зависимости  
+- для сборки проекта используется Webpack и Babel;  
+- для деплоя проекта используется gh-pages.

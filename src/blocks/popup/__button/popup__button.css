@@ -19,9 +19,20 @@
   cursor: pointer;
 }
 
+.popup__button-inactive{
+  opacity: .8;
+  pointer-events: none;
+}
+
+.popup__input-no-valid{
+  border-bottom: 1px solid var(--color_red);
+}
+
 @media screen and (max-width: 568px) {
   .popup__button {
     font-size: 14px;
     line-height: 17px;
   }
 }
+
+
