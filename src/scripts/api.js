@@ -24,11 +24,13 @@ function request(resource, method, data) {
 
     switch (method) {
         case 'GET':
+        case 'PUT':
+        case 'DELETE':
             path.push(data);
             break;
         case 'POST':
         case 'PATH':
-        case 'PUT':
+
             options.body = JSON.stringify(data)
             break;
     }
