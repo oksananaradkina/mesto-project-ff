@@ -1,6 +1,6 @@
 import './pages/index.css';
 import {showModal} from "./scripts/modal";
-import {enableValidation} from "./scripts/validation";
+import {clearValidation, enableValidation} from "./scripts/validation";
 import {loadInitialCards, loadProfile, requestError} from "./scripts/api";
 import {buttonAddCard, MODAL_TYPES, MODAL_WINDOWS, PROFILE, setGlobalProfile} from "./scripts/constants";
 
@@ -14,6 +14,7 @@ export function initAddCard() {
 
 function openModalAddCard() {
     const modalWindow = MODAL_WINDOWS[MODAL_TYPES.NEW_CARD]
+    clearValidation(modalWindow.modalWindow)
     showModal(modalWindow);
 }
 
@@ -21,23 +22,12 @@ export function addCardClickHandler(event) {
     openModalAddCard();
 }
 
-function createValidateConfig(formClass) {
-    return {
-        formSelector: `.${formClass} .popup__form`,
-        inputSelector: '.popup__input',
-        submitButtonSelector: '.popup__button',
-        inactiveButtonClass: 'popup__button-inactive',
-        inputErrorClass: 'popup__input-no-valid',
-        errorClass: 'validation_error_message'
-    }
-}
-
 initAddCard();
 initProfile();
 
 
-enableValidation(createValidateConfig('popup_type_new-card'));
-enableValidation(createValidateConfig('popup_type_edit'));
+enableValidation(MODAL_TYPES.EDIT);
+enableValidation(MODAL_TYPES.NEW_CARD);
 
 
 loadProfile()

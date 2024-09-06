@@ -1,24 +1,13 @@
-// enableValidation({
-//     formSelector: '.popup__form',
-//     inputSelector: '.popup__input',
-//     submitButtonSelector: '.popup__button',
-//     inactiveButtonClass: 'popup__button_disabled',
-//     inputErrorClass: 'popup__input_type_error',
-//     errorClass: 'popup__error_visible'
-// });
-//
-// clearValidation(profileForm, validationConfig);
+import {FORM_VALIDATION_CONFIG, MODAL_WINDOWS} from "./constants";
+
 const INPUT_VALIDATE_STATUSES = ['typeMismatch', 'tooShort', 'valueMissing', 'patternMismatch']
+
 
 export function addValidationErrorMessage(container, status, message) {
     if (hasErrorMessageElement(container, status)) {
         return;
     }
     container.appendChild(createErrorMessageElement(status, message))
-}
-
-export function deleteValidationErrorMessage(container, status) {
-    deleteErrorMessageElement(container, status)
 }
 
 export function deleteAllValidationErrorMessages(container) {
@@ -55,7 +44,8 @@ function getElementValidationStatuses(element) {
 
 }
 
-export function enableValidation(settings) {
+export function enableValidation(formType) {
+    const modalWindow = MODAL_WINDOWS[formType].modalWindow;
     const {
         formSelector,
         inputSelector,
@@ -63,8 +53,9 @@ export function enableValidation(settings) {
         inactiveButtonClass,
         inputErrorClass,
         errorClass
-    } = settings;
-    const form = document.querySelector(formSelector);
+    } = FORM_VALIDATION_CONFIG;
+
+    const form = modalWindow.querySelector(formSelector);
     const inputs = form.querySelectorAll(inputSelector);
     const submit = form.querySelector(submitButtonSelector);
     inputs.forEach((element) => {
@@ -93,5 +84,25 @@ export function enableValidation(settings) {
 
             })
         })
+    });
+}
+
+export function clearValidation(modalWindow) {
+    const {
+        formSelector,
+        inputSelector,
+        submitButtonSelector,
+        inactiveButtonClass,
+        inputErrorClass,
+    } = FORM_VALIDATION_CONFIG;
+    const form = modalWindow.querySelector(formSelector);
+    const inputs = form.querySelectorAll(inputSelector);
+    const submit = form.querySelector(submitButtonSelector);
+    submit.classList.add(inactiveButtonClass)
+
+    inputs.forEach((element) => {
+        const errorMessageContainer = form.querySelector('.popup__input_error_message__' + element.name);
+        deleteAllValidationErrorMessages(errorMessageContainer);
+        element.classList.remove(inputErrorClass)
     });
 }

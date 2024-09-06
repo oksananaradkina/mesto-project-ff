@@ -12,6 +12,15 @@ export function setGlobalProfile(profile) {
 
 }
 
+export const FORM_VALIDATION_CONFIG = {
+    formSelector: `.popup__form`,
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button-inactive',
+    inputErrorClass: 'popup__input-no-valid',
+    errorClass: 'validation_error_message'
+}
+
 
 export const MODAL_TYPES = {
     EDIT: 'edit',
@@ -35,9 +44,9 @@ function getProfile() {
     return {
         fields: {
             avatar: profileInfo.querySelector('.profile__avatar'),
-            avatar_edit: profileInfo.querySelector('.profile__avatar_icon_edit'),
+            avatarEdit: profileInfo.querySelector('.profile__avatar_icon_edit'),
             name: profileInfo.querySelector('.profile__title'),
-            description: profileInfo.querySelector('.profile__description'),
+            about: profileInfo.querySelector('.profile__description'),
         }
     }
 }
@@ -49,7 +58,7 @@ function getModalEdit() {
         form: modalWindowElement.querySelector('.popup__form'),
         fields: {
             name: modalWindowElement.querySelector('.popup__input_type_name'),
-            description: modalWindowElement.querySelector('.popup__input_type_description'),
+            about: modalWindowElement.querySelector('.popup__input_type_description'),
         },
         buttons: {
             close: modalWindowElement.querySelector('.popup__close'),

@@ -13,8 +13,7 @@ const config = {
 }
 
 function createUrl(path) {
-    const url = `${config.baseUrl}/${path.join('/')}`;
-    return url
+    return `${config.baseUrl}/${path.join('/')}`;
 }
 
 function request(resource, method, data) {
@@ -29,7 +28,7 @@ function request(resource, method, data) {
             path.push(data);
             break;
         case 'POST':
-        case 'PATH':
+        case 'PATCH':
 
             options.body = JSON.stringify(data)
             break;

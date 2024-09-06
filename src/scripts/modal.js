@@ -1,8 +1,8 @@
 export function createHandlers(modalWindow, submitHandler = null) {
     return {
-        overlay_click: overlayClickHandler(modalWindow),
-        key_esc_down: keyEscDownHandler(modalWindow),
-        close_button_click: closeButtonClickHandler(modalWindow),
+        overlayClick: overlayClickHandler(modalWindow),
+        keyEscDown: keyEscDownHandler(modalWindow),
+        closeButtonClick: closeButtonClickHandler(modalWindow),
         submit: submitHandler
     }
 }
@@ -11,9 +11,9 @@ export function showModal(data) {
     const {handlers, modalWindow, buttons} = data;
     modalWindow.classList.add('popup_is-opened');
 
-    modalWindow.addEventListener('click', handlers.overlay_click);
-    document.addEventListener('keydown', handlers.key_esc_down);
-    buttons.close.addEventListener('click', handlers.close_button_click);
+    modalWindow.addEventListener('click', handlers.overlayClick);
+    document.addEventListener('keydown', handlers.keyEscDown);
+    buttons.close.addEventListener('click', handlers.closeButtonClick);
 
     if (handlers.submit) {
         data.form.addEventListener('submit', handlers.submit)
@@ -25,9 +25,9 @@ export function closeModal(data) {
 
     modalWindow.classList.remove('popup_is-opened');
 
-    modalWindow.removeEventListener('click', handlers.overlay_click);
-    buttons.close.removeEventListener('click', handlers.close_button_click);
-    document.removeEventListener('keydown', handlers.key_esc_down);
+    modalWindow.removeEventListener('click', handlers.overlayClick);
+    buttons.close.removeEventListener('click', handlers.closeButtonClick);
+    document.removeEventListener('keydown', handlers.keyEscDown);
 
     if (handlers.submit) {
         data.form.removeEventListener('submit', handlers.submit)
@@ -48,7 +48,7 @@ function closeButtonClickHandler(modalWindow) {
 
 function keyEscDownHandler(modalWindow) {
     return (event) => {
-        if (event.keyCode === 27) {
+        if (event.code === "Escape") {
             closeModal(modalWindow);
         }
     }

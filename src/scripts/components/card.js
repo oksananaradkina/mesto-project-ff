@@ -8,7 +8,7 @@ function getCardTemplate() {
         card: template.querySelector('.card'),
         image: template.querySelector('.card__image'),
         title: template.querySelector('.card__title'),
-        like_count: template.querySelector('.card__like-count'),
+        likeCount: template.querySelector('.card__like-count'),
         buttons: {
             delete: template.querySelector('.card__delete-button'),
             like: template.querySelector('.card__like-button')
@@ -44,8 +44,8 @@ function getCardData(modalWindow, owner) {
 function addNewCard(modalWindow, owner) {
     const cardData = getCardData(modalWindow, owner);
     saveNewCard(cardData)
-        .then(() => {
-            const newCard = createCard(owner, cardData, deleteCardHandler, openImageHandler, likeHandler);
+        .then((card) => {
+            const newCard = createCard(owner, card, deleteCardHandler, openImageHandler, likeHandler);
             CARD_CONTAINER.prepend(newCard.card);
 
             modalWindow.fields.placeName.value = '';
@@ -88,7 +88,7 @@ export function createCard(profile, cardData, deleteCallback, openImageCallback,
     }
 
     template.buttons.like.addEventListener('click', likeCallback);
-    template.like_count.textContent = cardData.likes.length;
+    template.likeCount.textContent = cardData.likes.length;
     template.card.setAttribute('data-id', cardData._id)
     return template;
 }
@@ -112,24 +112,17 @@ export function likeHandler(event) {
     const activeClass = 'card__like-button_is-active'
     const likeCount = card.querySelector('.card__like-count');
 
-    if (likeButton.classList.contains(activeClass)) {
-        deleteLikes(id)
-            .then((res) => {
-            likeButton.classList.remove(activeClass);
+    const likeMethod = likeButton.classList.contains(activeClass) ? deleteLikes : addLike;
+
+
+    likeMethod(id)
+        .then((res) => {
+            likeButton.classList.toggle(activeClass);
             likeCount.textContent = res.likes.length;
         })
-            .catch((error) => {
-                requestError('Like not deleted.', error);
-            })
-    } else {
-        addLike(id)
-            .then((res) => {
-            likeButton.classList.add(activeClass);
-            likeCount.textContent = res.likes.length;
+        .catch((error) => {
+            const errorMessage = likeButton.classList.contains(activeClass) ? 'Like not deleted.' : 'Like not added.';
+            requestError(errorMessage, error);
         })
-            .catch((error) => {
-                requestError('Like not added.', error);
-            })
-    }
 }
 
