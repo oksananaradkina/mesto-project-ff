@@ -1,16 +1,16 @@
 import {FORM_VALIDATION_CONFIG, MODAL_WINDOWS} from "./constants";
 
-const INPUT_VALIDATE_STATUSES = ['typeMismatch', 'tooShort', 'valueMissing', 'patternMismatch']
+const INPUT_VALIDATE_STATUSES = ['patternMismatch'];
 
 
-export function addValidationErrorMessage(container, status, message) {
+function addValidationErrorMessage(container, status, message) {
     if (hasErrorMessageElement(container, status)) {
         return;
     }
     container.appendChild(createErrorMessageElement(status, message))
 }
 
-export function deleteAllValidationErrorMessages(container) {
+function deleteAllValidationErrorMessages(container) {
     container.innerHTML = '';
 }
 
@@ -39,9 +39,7 @@ function getElementValidationStatuses(element) {
             const message = element.getAttribute(attributeName)
             return {status, message}
         }
-
     }).filter(Boolean)
-
 }
 
 export function enableValidation(formType) {
@@ -60,7 +58,7 @@ export function enableValidation(formType) {
     const submit = form.querySelector(submitButtonSelector);
     inputs.forEach((element) => {
 
-        element.addEventListener('input', (evt) => {
+        element.addEventListener('input', () => {
             const errorMessageContainer = form.querySelector('.popup__input_error_message__' + element.name);
             errorMessageContainer.classList.add(errorClass);
 
@@ -68,11 +66,13 @@ export function enableValidation(formType) {
                 element.classList.remove(inputErrorClass)
                 deleteAllValidationErrorMessages(errorMessageContainer);
                 submit.classList.remove(inactiveButtonClass)
+                submit.removeAttribute('disabled')
                 return;
             }
 
             element.classList.add(inputErrorClass)
             submit.classList.add(inactiveButtonClass)
+            submit.setAttribute('disabled', '')
             const statuses = getElementValidationStatuses(element)
 
             statuses.forEach(({status, message}) => {
